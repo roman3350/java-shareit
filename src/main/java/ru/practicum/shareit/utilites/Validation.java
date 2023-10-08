@@ -27,7 +27,7 @@ public class Validation {
                     return user1.getEmail().equals(user.getEmail());
                 })) {
             log.warn("Пользователь с почта {} уже зарегистрирован", user.getEmail());
-            throw new duplicateEmailException("Пользователь с такой почтой уже зарегистрирован");
+            throw new DuplicateEmailException("Пользователь с такой почтой уже зарегистрирован");
         }
     }
 

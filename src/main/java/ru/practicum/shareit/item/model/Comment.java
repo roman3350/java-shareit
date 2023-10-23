@@ -4,21 +4,24 @@ import lombok.Data;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
-/**
- * TODO Sprint add-controllers.
- */
-@Data
 @Entity
-@Table(name = "items")
-public class Item {
+@Table(name = "comment")
+@Data
+public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
-    private String description;
-    private Boolean available;
+
+    private String text;
+
     @ManyToOne(fetch = FetchType.EAGER)
-    private User user;
-    //private ItemRequest request;
+    private Item item;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    private User author;
+
+    @Column(name = "time_create")
+    private LocalDateTime create;
 }

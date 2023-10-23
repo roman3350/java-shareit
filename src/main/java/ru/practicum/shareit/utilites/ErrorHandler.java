@@ -4,6 +4,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import ru.practicum.shareit.booking.exception.IncorrectStatus;
+import ru.practicum.shareit.booking.exception.IncorrectedIdBooking;
+import ru.practicum.shareit.booking.exception.IncorrectedOwnerOrAuthor;
 import ru.practicum.shareit.user.exception.*;
 import ru.practicum.shareit.item.exception.*;
 
@@ -36,6 +39,38 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleValidationItemException(final ValidationItemException e) {
+        return new ErrorResponse(
+                e.getMessage()
+        );
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleIncorrectIdItemException(final IncorrectIdItem e) {
+        return new ErrorResponse(
+                e.getMessage()
+        );
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleIncorrectIdBookingException(final IncorrectedIdBooking e) {
+        return new ErrorResponse(
+                e.getMessage()
+        );
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleIncorrectOwnerAndAutorBooking(final IncorrectedOwnerOrAuthor e) {
+        return new ErrorResponse(
+                e.getMessage()
+        );
+    }
+
+    @ExceptionHandler
+    @ResponseStatus
+    public ErrorResponse handleIncorrectState(final IncorrectStatus e) {
         return new ErrorResponse(
                 e.getMessage()
         );

@@ -31,6 +31,12 @@ public class ItemServiceImpl implements ItemService {
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
 
+    /**
+     * Вывод продукта по ID
+     *
+     * @param itemId ID продукта
+     * @return Продукт
+     */
     @Override
     public ItemDto findItemByIdItem(long itemId, long userId) {
         Optional<Item> item = itemRepository.findById(itemId);
@@ -49,6 +55,12 @@ public class ItemServiceImpl implements ItemService {
                 CommentMapper.mapToCommentDto(commentRepository.findAllByItemId(itemId)));
     }
 
+    /**
+     * Вывод продуктов выложенных пользователем
+     *
+     * @param userId ID пользователя
+     * @return List продуктов
+     */
     @Override
     public List<ItemDto> findItemByIdUser(long userId) {
         return itemRepository.findByUserId(userId).stream()
@@ -63,6 +75,12 @@ public class ItemServiceImpl implements ItemService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Поиск продукта по названию и описанию
+     *
+     * @param nameItem Название или описание продукта
+     * @return Продукт
+     */
     @Override
     public List<ItemDto> search(String nameItem) {
         if (nameItem.isEmpty()) {
@@ -71,6 +89,13 @@ public class ItemServiceImpl implements ItemService {
         return ItemMapper.mapToItemDto(itemRepository.findByNameContainingIgnoreCase(nameItem));
     }
 
+    /**
+     * Создание продукта
+     *
+     * @param userId ID пользователя, добавляющего продукт
+     * @param item   Продукт
+     * @return Созданный продукт
+     */
     @Override
     public ItemDto create(long userId, Item item) {
         Optional<User> user = userRepository.findById(userId);
@@ -80,6 +105,14 @@ public class ItemServiceImpl implements ItemService {
         return ItemMapper.mapToItemDto(itemRepository.save(item));
     }
 
+    /**
+     * Обновление продукта
+     *
+     * @param userId ID пользователя, который добавил продукт
+     * @param itemId ID продукта
+     * @param item   Продукт
+     * @return Обновленный продукт
+     */
     @Override
     public ItemDto update(long userId, long itemId, Item item) {
         Item itemUpdate = itemRepository.findById(itemId).get();
@@ -96,6 +129,14 @@ public class ItemServiceImpl implements ItemService {
         return ItemMapper.mapToItemDto(itemRepository.save(itemUpdate));
     }
 
+    /**
+     * Создание комментария
+     *
+     * @param userId  ID пользователя создающего комментарий
+     * @param itemId  ID комментируемого предмета
+     * @param comment Комментарий
+     * @return Комментарий
+     */
     @Override
     public CommentDto createComment(long userId, long itemId, Comment comment) {
         validationComment(comment.getText());
@@ -111,6 +152,11 @@ public class ItemServiceImpl implements ItemService {
         return CommentMapper.mapToCommentDto(commentRepository.save(comment));
     }
 
+    /**
+     * Удаление продукта
+     *
+     * @param itemId ID продукта
+     */
     @Override
     public void delete(long itemId) {
         itemRepository.deleteById(itemId);

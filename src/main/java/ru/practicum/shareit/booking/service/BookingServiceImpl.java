@@ -26,6 +26,13 @@ public class BookingServiceImpl implements BookingService {
     private final UserRepository userRepository;
     private final ItemRepository itemRepository;
 
+    /**
+     * Запрос на бронирования
+     *
+     * @param userId     ID бронирующего пользователя
+     * @param bookingDto Параметры бронирования
+     * @return Бронирование
+     */
     @Override
     public Booking create(long userId, BookingDto bookingDto) {
         Optional<User> user = userRepository.findById(userId);
@@ -39,6 +46,14 @@ public class BookingServiceImpl implements BookingService {
         return bookingRepository.save(booking);
     }
 
+    /**
+     * Подтверждение или отклонение бронирования
+     *
+     * @param userId    ID пользователя подтверждающего или отклоняющего бронирование
+     * @param bookingId ID бронирование
+     * @param approved  Подтверждение или отклонение бронирования
+     * @return Бронирование
+     */
     @Override
     public Booking responseToRequest(long userId, long bookingId, boolean approved) {
         Optional<Booking> booking = bookingRepository.findById(bookingId);
@@ -56,6 +71,13 @@ public class BookingServiceImpl implements BookingService {
         }
     }
 
+    /**
+     * Поиск бронирования по ID
+     *
+     * @param userId    ID пользователя осуществляющего поиск
+     * @param bookingId ID бронирования
+     * @return Бронирование
+     */
     @Override
     public Booking findBookingById(long userId, long bookingId) {
         Optional<Booking> booking = bookingRepository.findById(bookingId);
@@ -64,6 +86,13 @@ public class BookingServiceImpl implements BookingService {
         return booking.get();
     }
 
+    /**
+     * Поиск бронирования по автору бронирования
+     *
+     * @param userId ID пользователя
+     * @param state  Статус бронирования
+     * @return Бронирование
+     */
     @Override
     public List<Booking> findBookingAuthor(long userId, String state) {
         try {
@@ -100,6 +129,13 @@ public class BookingServiceImpl implements BookingService {
 
     }
 
+    /**
+     * Поиск бронирования владельцем вещей
+     *
+     * @param userId ID Пользователя
+     * @param state  Статус бронирования
+     * @return Бронирование
+     */
     @Override
     public List<Booking> findBookingOwner(long userId, String state) {
         try {

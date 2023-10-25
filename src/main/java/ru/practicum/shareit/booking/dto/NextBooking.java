@@ -4,8 +4,8 @@ import lombok.Data;
 
 @Data
 public class NextBooking {
-    Long id;
-    Long bookerId;
+    private Long id;
+    private Long bookerId;
 
     public NextBooking(Long id, Long bookerId) {
         this.id = id;

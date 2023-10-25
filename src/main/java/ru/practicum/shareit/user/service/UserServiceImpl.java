@@ -16,11 +16,22 @@ import static ru.practicum.shareit.utilites.Validation.*;
 public class UserServiceImpl implements UserService {
     private final UserRepository repository;
 
+    /**
+     * Вывод всех пользователей
+     *
+     * @return List с пользователями
+     */
     public List<User> findAll() {
         List<User> users = repository.findAll();
         return users;
     }
 
+    /**
+     * Вывод пользователя по ID
+     *
+     * @param userId ID пользователя
+     * @return Пользователь
+     */
     @Override
     public User findUserById(long userId) {
         Optional<User> user = repository.findById(userId);
@@ -28,12 +39,25 @@ public class UserServiceImpl implements UserService {
         return user.get();
     }
 
+    /**
+     * Создание пользователя
+     *
+     * @param user данные пользователя
+     * @return созданный пользователь
+     */
     @Override
     public User create(User user) {
         validationUser(user);
         return repository.save(user);
     }
 
+    /**
+     * Обновление пользователя
+     *
+     * @param userId ID пользователя, которого надо обновить
+     * @param user   данные пользователя на обновление
+     * @return обновленный пользователь
+     */
     @Override
     public User update(long userId, User user) {
         User userUpdate = repository.findById(userId).get();
@@ -46,6 +70,11 @@ public class UserServiceImpl implements UserService {
         return repository.save(userUpdate);
     }
 
+    /**
+     * Удаление пользователя
+     *
+     * @param userId ID пользователя, которого надо удалить
+     */
     @Override
     public void delete(long userId) {
         repository.deleteById(userId);

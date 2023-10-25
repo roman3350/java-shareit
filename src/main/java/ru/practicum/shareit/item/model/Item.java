@@ -20,5 +20,4 @@ public class Item {
     private Boolean available;
     @ManyToOne(fetch = FetchType.EAGER)
     private User user;
-    //private ItemRequest request;
 }

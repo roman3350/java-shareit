@@ -42,46 +42,14 @@ public class ItemMapper {
                                             Booking bookingLast,
                                             Booking bookingNext,
                                             List<CommentDto> comment) {
-        if (bookingLast == null && bookingNext == null) {
-            return new ItemDto(
-                    item.getId(),
-                    item.getName(),
-                    item.getDescription(),
-                    item.getAvailable(),
-                    null,
-                    null,
-                    comment
-            );
-        } else if (bookingLast == null) {
-            return new ItemDto(
-                    item.getId(),
-                    item.getName(),
-                    item.getDescription(),
-                    item.getAvailable(),
-                    null,
-                    new NextBooking(bookingNext.getId(), bookingNext.getBooker().getId()),
-                    comment
-            );
-        } else if (bookingNext == null) {
-            return new ItemDto(
-                    item.getId(),
-                    item.getName(),
-                    item.getDescription(),
-                    item.getAvailable(),
-                    new LastBooking(bookingLast.getId(), bookingLast.getBooker().getId()),
-                    null,
-                    comment
-            );
-        } else {
-            return new ItemDto(
-                    item.getId(),
-                    item.getName(),
-                    item.getDescription(),
-                    item.getAvailable(),
-                    new LastBooking(bookingLast.getId(), bookingLast.getBooker().getId()),
-                    new NextBooking(bookingNext.getId(), bookingNext.getBooker().getId()),
-                    comment
-            );
-        }
+        return new ItemDto(
+                item.getId(),
+                item.getName(),
+                item.getDescription(),
+                item.getAvailable(),
+                bookingLast == null ? null : new LastBooking(bookingLast.getId(), bookingLast.getBooker().getId()),
+                bookingNext == null ? null : new NextBooking(bookingNext.getId(), bookingNext.getBooker().getId()),
+                comment
+        );
     }
 }

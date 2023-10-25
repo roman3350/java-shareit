@@ -11,7 +11,7 @@ import ru.practicum.shareit.item.service.ItemService;
 import java.util.List;
 
 /**
- * TODO Sprint add-controllers.
+ * Контроллер предметов
  */
 @RestController
 @RequestMapping("/items")
@@ -80,10 +80,18 @@ public class ItemController {
         return itemService.update(userId, itemId, item);
     }
 
+    /**
+     * Создание комментария
+     *
+     * @param userId  ID пользователя создающего комментарий
+     * @param itemId  ID комментируемого предмета
+     * @param comment Комментарий
+     * @return Комментарий
+     */
     @PostMapping("/{itemId}/comment")
     public CommentDto createComment(@RequestHeader("X-Sharer-User-Id") long userId,
                                     @PathVariable long itemId,
-                                    @RequestBody Comment comment){
+                                    @RequestBody Comment comment) {
         return itemService.createComment(userId, itemId, comment);
     }
 

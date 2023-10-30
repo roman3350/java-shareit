@@ -1,20 +1,18 @@
 package ru.practicum.shareit.item.repository;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import ru.practicum.shareit.item.model.Item;
 
 import java.util.List;
 
-public interface ItemRepository {
+public interface ItemRepository extends JpaRepository<Item, Long> {
+    @Query("select it " +
+            "from Item as it " +
+            "where (lower(it.name) like lower(concat('%', ?1,'%')) " +
+            "or lower(it.description)like lower(concat('%', ?1,'%'))) " +
+            "and it.available = true")
+    List<Item> findByNameContainingIgnoreCase(String nameSearch);
 
-    Item findItemByIdItem(long itemId);
-
-    List<Item> findItemByIdUser(long userId);
-
-    List<Item> search(String nameItem);
-
-    Item create(long userId, Item item);
-
-    Item update(long userId, long itemId, Item item);
-
-    void delete(long itemId);
+    List<Item> findByUserId(long userId);
 }

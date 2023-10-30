@@ -8,7 +8,7 @@ import ru.practicum.shareit.user.service.UserService;
 import java.util.List;
 
 /**
- * TODO Sprint add-controllers.
+ * Контроллер пользователей
  */
 @RestController
 @RequestMapping(path = "/users")

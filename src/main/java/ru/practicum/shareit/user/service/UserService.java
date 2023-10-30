@@ -11,7 +11,7 @@ public interface UserService {
      *
      * @return List с пользователями
      */
-    List<User> findAll();
+    List<User> findAll(int from, int size);
 
     /**
      * Вывод пользователя по ID

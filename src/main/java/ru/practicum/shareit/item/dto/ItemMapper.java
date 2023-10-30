@@ -13,12 +13,22 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ItemMapper {
     public static ItemDto mapToItemDto(Item item) {
-        return new ItemDto(
-                item.getId(),
-                item.getName(),
-                item.getDescription(),
-                item.getAvailable()
-        );
+        if (item.getRequest() == null) {
+            return new ItemDto(
+                    item.getId(),
+                    item.getName(),
+                    item.getDescription(),
+                    item.getAvailable()
+            );
+        } else {
+            return new ItemDto(
+                    item.getId(),
+                    item.getName(),
+                    item.getDescription(),
+                    item.getAvailable(),
+                    item.getRequest().getId()
+            );
+        }
     }
 
     public static ItemDto mapToItemCommentDto(Item item, List<CommentDto> comments) {
@@ -49,7 +59,8 @@ public class ItemMapper {
                 item.getAvailable(),
                 bookingLast == null ? null : new LastBooking(bookingLast.getId(), bookingLast.getBooker().getId()),
                 bookingNext == null ? null : new NextBooking(bookingNext.getId(), bookingNext.getBooker().getId()),
-                comment
+                comment,
+                item.getRequest() == null ? null : item.getRequest().getId()
         );
     }
 }

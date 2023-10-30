@@ -1,8 +1,8 @@
 package ru.practicum.shareit.user.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
@@ -21,9 +21,10 @@ public class UserServiceImpl implements UserService {
      *
      * @return List с пользователями
      */
-    public List<User> findAll() {
-        List<User> users = repository.findAll();
-        return users;
+    public List<User> findAll(int from, int size) {
+        validationPage(from, size);
+        PageRequest page = PageRequest.of(from > 0 ? from / size : 0, size);
+        return repository.findAll(page).getContent();
     }
 
     /**

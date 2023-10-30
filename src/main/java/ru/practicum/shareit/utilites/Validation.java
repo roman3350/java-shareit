@@ -5,8 +5,10 @@ import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.exception.IncorrectedIdBooking;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
+import ru.practicum.shareit.item.dto.ItemDtoShort;
 import ru.practicum.shareit.item.exception.*;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.exception.*;
 import ru.practicum.shareit.user.model.User;
 
@@ -43,7 +45,7 @@ public class Validation {
         }
     }
 
-    public static void validationItem(Item item) {
+    public static void validationItem(ItemDtoShort item) {
         if (item.getName().isEmpty() || item.getAvailable() == null || item.getDescription() == null) {
             log.warn("Некорректный элемент");
             throw new ValidationItemException("Некорректный продукт");
@@ -120,6 +122,27 @@ public class Validation {
         if (comment.isEmpty() || comment.isBlank()) {
             log.warn("Пустой комментарий");
             throw new ValidationItemException("Пустой комментарий");
+        }
+    }
+
+    public static void validationRequest(ItemRequest itemRequest) {
+        if (itemRequest.getDescription() == null) {
+            log.warn("Некорректный запрос");
+            throw new ValidationItemException("Некорректный запрос");
+        }
+    }
+
+    public static void validationPage(int from, int size) {
+        if (from < 0 || size <= 0) {
+            log.warn("Некорректный размер страницы");
+            throw new ValidationItemException("Некорректный размер страницы");
+        }
+    }
+
+    public static void validationRequestId(long requestId, Optional<ItemRequest> itemRequest) {
+        if (itemRequest.isEmpty()) {
+            log.warn("Запроса с ID {} нет", requestId);
+            throw new IncorrectIdItem("Запроса с таким ID нет");
         }
     }
 }

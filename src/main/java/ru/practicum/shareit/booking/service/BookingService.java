@@ -42,7 +42,7 @@ public interface BookingService {
      * @param state  Статус бронирования
      * @return Бронирование
      */
-    public List<Booking> findBookingAuthor(long userId, String state);
+    public List<Booking> findBookingAuthor(long userId, String state,int from, int size);
 
     /**
      * Поиск бронирования владельцем вещей
@@ -51,6 +51,6 @@ public interface BookingService {
      * @param state  Статус бронирования
      * @return Бронирование
      */
-    List<Booking> findBookingOwner(long userId, String state);
+    List<Booking> findBookingOwner(long userId, String state, int from, int size);
 
 }

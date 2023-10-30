@@ -2,6 +2,7 @@ package ru.practicum.shareit.item.service;
 
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemDtoShort;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 
@@ -23,7 +24,7 @@ public interface ItemService {
      * @param userId ID пользователя
      * @return List продуктов
      */
-    List<ItemDto> findItemByIdUser(long userId);
+    List<ItemDto> findItemByIdUser(long userId, int from, int size);
 
     /**
      * Поиск продукта по названию и описанию
@@ -31,16 +32,16 @@ public interface ItemService {
      * @param nameItem Название или описание продукта
      * @return Продукт
      */
-    List<ItemDto> search(String nameItem);
+    List<ItemDto> search(String nameItem, int from, int size);
 
     /**
      * Создание продукта
      *
-     * @param userId ID пользователя, добавляющего продукт
-     * @param item   Продукт
+     * @param userId       ID пользователя, добавляющего продукт
+     * @param itemDtoShort Продукт
      * @return Созданный продукт
      */
-    ItemDto create(long userId, Item item);
+    ItemDto create(long userId, ItemDtoShort itemDtoShort);
 
     /**
      * Обновление продукта

@@ -67,8 +67,10 @@ public class BookingController {
      */
     @GetMapping
     public List<Booking> findBookingAuthor(@RequestHeader("X-Sharer-User-Id") long userId,
-                                           @RequestParam(defaultValue = "ALL") String state) {
-        return bookingService.findBookingAuthor(userId, state);
+                                           @RequestParam(defaultValue = "ALL") String state,
+                                           @RequestParam(defaultValue = "0") int from,
+                                           @RequestParam(defaultValue = "10") int size) {
+        return bookingService.findBookingAuthor(userId, state, from, size);
     }
 
     /**
@@ -80,7 +82,9 @@ public class BookingController {
      */
     @GetMapping("/owner")
     public List<Booking> findBookingOwner(@RequestHeader("X-Sharer-User-Id") long userId,
-                                          @RequestParam(defaultValue = "ALL") String state) {
-        return bookingService.findBookingOwner(userId, state);
+                                          @RequestParam(defaultValue = "ALL") String state,
+                                          @RequestParam(defaultValue = "0") int from,
+                                          @RequestParam(defaultValue = "10") int size) {
+        return bookingService.findBookingOwner(userId, state, from, size);
     }
 }

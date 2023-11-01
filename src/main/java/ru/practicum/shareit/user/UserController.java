@@ -22,8 +22,9 @@ public class UserController {
      * @return List с пользователями
      */
     @GetMapping
-    public List<User> findAll() {
-        return userService.findAll();
+    public List<User> findAll(@RequestParam(defaultValue = "0") int from,
+                              @RequestParam(defaultValue = "10") int size) {
+        return userService.findAll(from, size);
     }
 
     /**

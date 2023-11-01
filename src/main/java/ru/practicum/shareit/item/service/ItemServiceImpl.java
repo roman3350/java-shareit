@@ -1,18 +1,17 @@
 package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.booking.repository.BookingRepository;
-import ru.practicum.shareit.item.dto.CommentDto;
-import ru.practicum.shareit.item.dto.CommentMapper;
-import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.ItemMapper;
+import ru.practicum.shareit.item.dto.*;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
@@ -30,6 +29,7 @@ public class ItemServiceImpl implements ItemService {
     private final UserRepository userRepository;
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
+    private final ItemRequestRepository itemRequestRepository;
 
     /**
      * Вывод продукта по ID
@@ -62,8 +62,10 @@ public class ItemServiceImpl implements ItemService {
      * @return List продуктов
      */
     @Override
-    public List<ItemDto> findItemByIdUser(long userId) {
-        return itemRepository.findByUserId(userId).stream()
+    public List<ItemDto> findItemByIdUser(long userId, int from, int size) {
+        validationPage(from, size);
+        PageRequest page = PageRequest.of(from > 0 ? from / size : 0, size);
+        return itemRepository.findAllByUserId(userId, page).stream()
                 .map(item -> ItemMapper.mapToItemDtoOwner(item,
                         bookingRepository.findFirst1ByItemIdAndStartBeforeAndStatusNotOrderByStartDesc(item.getId(),
                                 LocalDateTime.now(),
@@ -82,25 +84,34 @@ public class ItemServiceImpl implements ItemService {
      * @return Продукт
      */
     @Override
-    public List<ItemDto> search(String nameItem) {
+    public List<ItemDto> search(String nameItem, int from, int size) {
+        validationPage(from, size);
+        PageRequest page = PageRequest.of(from > 0 ? from / size : 0, size);
         if (nameItem.isEmpty()) {
             return List.of();
         }
-        return ItemMapper.mapToItemDto(itemRepository.findByNameContainingIgnoreCase(nameItem));
+        return ItemMapper.mapToItemDto(itemRepository.findAllByNameContainingIgnoreCase(nameItem, page));
     }
 
     /**
      * Создание продукта
      *
-     * @param userId ID пользователя, добавляющего продукт
-     * @param item   Продукт
+     * @param userId       ID пользователя, добавляющего продукт
+     * @param itemDtoShort Продукт
      * @return Созданный продукт
      */
     @Override
-    public ItemDto create(long userId, Item item) {
+    public ItemDto create(long userId, ItemDtoShort itemDtoShort) {
         Optional<User> user = userRepository.findById(userId);
-        validationItem(item);
+        validationItem(itemDtoShort);
         validationFindOwner(userId, user);
+        Item item = Item.builder()
+                .name(itemDtoShort.getName())
+                .description(itemDtoShort.getDescription())
+                .available(itemDtoShort.getAvailable())
+                .request(itemDtoShort.getRequestId() == null ? null :
+                        itemRequestRepository.findById(itemDtoShort.getRequestId()).get())
+                .build();
         item.setUser(user.get());
         return ItemMapper.mapToItemDto(itemRepository.save(item));
     }

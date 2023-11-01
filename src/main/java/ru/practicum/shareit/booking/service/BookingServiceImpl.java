@@ -1,6 +1,7 @@
 package ru.practicum.shareit.booking.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingMapper;
@@ -94,32 +95,38 @@ public class BookingServiceImpl implements BookingService {
      * @return Бронирование
      */
     @Override
-    public List<Booking> findBookingAuthor(long userId, String state) {
+    public List<Booking> findBookingAuthor(long userId, String state, int from, int size) {
         try {
+            validationPage(from, size);
+            PageRequest page = PageRequest.of(from > 0 ? from / size : 0, size);
             BookingStatus status = BookingStatus.valueOf(state);
             validationFindOwner(userId, userRepository.findById(userId));
             switch (status) {
                 case ALL:
-                    return bookingRepository.findByBookerId(userId);
+                    return bookingRepository.findAllByBookerId(userId, page);
                 case PAST:
-                    return bookingRepository.findByBookerIdAndEndBeforeOrderByEndDesc(userId,
-                            LocalDateTime.now());
-                case FUTURE:
-                    return bookingRepository.findByBookerIdAndStatusInAndStartAfterOrderByStartDesc(userId,
-                            List.of(BookingStatus.APPROVED, BookingStatus.WAITING),
-                            LocalDateTime.now());
-                case CURRENT:
-                    return bookingRepository.findByBookerIdAndStartBeforeAndEndAfter(userId,
+                    return bookingRepository.findAllByBookerIdAndEndBeforeOrderByEndDesc(userId,
                             LocalDateTime.now(),
-                            LocalDateTime.now());
+                            page);
+                case FUTURE:
+                    return bookingRepository.findAllByBookerIdAndStatusInAndStartAfterOrderByStartDesc(userId,
+                            List.of(BookingStatus.APPROVED,
+                                    BookingStatus.WAITING),
+                            LocalDateTime.now(),
+                            page);
+                case CURRENT:
+                    return bookingRepository.findAllByBookerIdAndStartBeforeAndEndAfter(userId,
+                            LocalDateTime.now(),
+                            LocalDateTime.now(),
+                            page);
                 case WAITING:
-                    return bookingRepository.findByBookerIdAndStatus(userId, BookingStatus.WAITING);
+                    return bookingRepository.findAllByBookerIdAndStatus(userId, BookingStatus.WAITING, page);
                 case APPROVED:
-                    return bookingRepository.findByBookerIdAndStatus(userId, BookingStatus.APPROVED);
+                    return bookingRepository.findAllByBookerIdAndStatus(userId, BookingStatus.APPROVED, page);
                 case CANCELED:
-                    return bookingRepository.findByBookerIdAndStatus(userId, BookingStatus.CANCELED);
+                    return bookingRepository.findAllByBookerIdAndStatus(userId, BookingStatus.CANCELED, page);
                 case REJECTED:
-                    return bookingRepository.findByBookerIdAndStatus(userId, BookingStatus.REJECTED);
+                    return bookingRepository.findAllByBookerIdAndStatus(userId, BookingStatus.REJECTED, page);
                 default:
                     throw new IncorrectStatus("Unknown state: UNSUPPORTED_STATUS");
             }
@@ -137,32 +144,37 @@ public class BookingServiceImpl implements BookingService {
      * @return Бронирование
      */
     @Override
-    public List<Booking> findBookingOwner(long userId, String state) {
+    public List<Booking> findBookingOwner(long userId, String state, int from, int size) {
         try {
+            validationPage(from, size);
+            PageRequest page = PageRequest.of(from > 0 ? from / size : 0, size);
             BookingStatus status = BookingStatus.valueOf(state);
             validationFindOwner(userId, userRepository.findById(userId));
             switch (status) {
                 case ALL:
-                    return bookingRepository.findByOwnerId(userId);
+                    return bookingRepository.findAllByOwnerId(userId, page);
                 case PAST:
-                    return bookingRepository.findByOwnerIdAndEndBefore(userId,
-                            LocalDateTime.now());
+                    return bookingRepository.findAllByOwnerIdAndEndBefore(userId,
+                            LocalDateTime.now(),
+                            page);
                 case FUTURE:
-                    return bookingRepository.findByOwnerIdAndStatusInAndStartBeforeOrderByStartDesc(userId,
+                    return bookingRepository.findAllByOwnerIdAndStatusInAndStartBeforeOrderByStartDesc(userId,
                             BookingStatus.APPROVED,
                             BookingStatus.WAITING,
-                            LocalDateTime.now());
+                            LocalDateTime.now(),
+                            page);
                 case CURRENT:
-                    return bookingRepository.findByOwnerIdAndStartBeforeAndEndAfter(userId,
-                            LocalDateTime.now());
+                    return bookingRepository.findAllByOwnerIdAndStartBeforeAndEndAfter(userId,
+                            LocalDateTime.now(),
+                            page);
                 case WAITING:
-                    return bookingRepository.findByOwnerIdAndStatus(userId, BookingStatus.WAITING);
+                    return bookingRepository.findAllByOwnerIdAndStatus(userId, BookingStatus.WAITING, page);
                 case APPROVED:
-                    return bookingRepository.findByOwnerIdAndStatus(userId, BookingStatus.APPROVED);
+                    return bookingRepository.findAllByOwnerIdAndStatus(userId, BookingStatus.APPROVED, page);
                 case CANCELED:
-                    return bookingRepository.findByOwnerIdAndStatus(userId, BookingStatus.CANCELED);
+                    return bookingRepository.findAllByOwnerIdAndStatus(userId, BookingStatus.CANCELED, page);
                 case REJECTED:
-                    return bookingRepository.findByOwnerIdAndStatus(userId, BookingStatus.REJECTED);
+                    return bookingRepository.findAllByOwnerIdAndStatus(userId, BookingStatus.REJECTED, page);
                 default:
                     throw new IncorrectStatus("Unknown state: UNSUPPORTED_STATUS");
             }

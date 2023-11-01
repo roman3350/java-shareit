@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemDtoShort;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
@@ -38,8 +39,10 @@ public class ItemController {
      * @return List продуктов
      */
     @GetMapping
-    public List<ItemDto> findItemByIdUser(@RequestHeader("X-Sharer-User-Id") long userId) {
-        return itemService.findItemByIdUser(userId);
+    public List<ItemDto> findItemByIdUser(@RequestHeader("X-Sharer-User-Id") long userId,
+                                          @RequestParam(defaultValue = "0") int from,
+                                          @RequestParam(defaultValue = "10") int size) {
+        return itemService.findItemByIdUser(userId, from, size);
     }
 
     /**
@@ -49,8 +52,10 @@ public class ItemController {
      * @return Продукт
      */
     @GetMapping("/search")
-    public List<ItemDto> search(@RequestParam String text) {
-        return itemService.search(text);
+    public List<ItemDto> search(@RequestParam String text,
+                                @RequestParam(defaultValue = "0") int from,
+                                @RequestParam(defaultValue = "10") int size) {
+        return itemService.search(text, from, size);
     }
 
     /**
@@ -61,7 +66,7 @@ public class ItemController {
      * @return Созданный продукт
      */
     @PostMapping
-    public ItemDto create(@RequestHeader("X-Sharer-User-Id") long userId, @RequestBody Item item) {
+    public ItemDto create(@RequestHeader("X-Sharer-User-Id") long userId, @RequestBody ItemDtoShort item) {
         return itemService.create(userId, item);
     }
 

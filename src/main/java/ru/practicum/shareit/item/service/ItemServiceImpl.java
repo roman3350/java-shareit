@@ -65,7 +65,7 @@ public class ItemServiceImpl implements ItemService {
     public List<ItemDto> findItemByIdUser(long userId, int from, int size) {
         validationPage(from, size);
         PageRequest page = PageRequest.of(from > 0 ? from / size : 0, size);
-        return itemRepository.findAllByUserId(userId, page).stream()
+        return itemRepository.findAllByUserIdOrderById(userId, page).stream()
                 .map(item -> ItemMapper.mapToItemDtoOwner(item,
                         bookingRepository.findFirst1ByItemIdAndStartBeforeAndStatusNotOrderByStartDesc(item.getId(),
                                 LocalDateTime.now(),

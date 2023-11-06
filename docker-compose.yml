@@ -23,11 +23,12 @@ services:
     volumes:
       - /var/lib/postgresql/data/
     ports:
-      - "6541:6541"
+      - "6541:5432"
     environment:
       - POSTGRES_DB=shareit
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
+      - TZ=europe/moscow
 
 
 

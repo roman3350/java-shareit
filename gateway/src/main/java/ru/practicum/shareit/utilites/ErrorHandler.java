@@ -18,7 +18,7 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleValidationTime(final ValidationTime e){
+    public ErrorResponse handleValidationTime(final ValidationTime e) {
         return new ErrorResponse(
                 e.getMessage()
         );
